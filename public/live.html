@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Score</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; background: #f4f4f4; }
+    #scoreCard { margin: 0 auto; width: 400px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-size: 16px; }
+    .team { font-weight: bold; color: #007bff; margin-top: 10px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>🏏 Live Cricket Score</h2>
+  <div id="scoreCard">Loading...</div>
+
+  <script>
+    async function fetchScore() {
+      try {
+        const res = await fetch("/score", { cache: "no-store" });
+        const data = await res.json();
+
+        document.getElementById("scoreCard").innerHTML = `
+          <div class="team">Batting Team: ${data.battingTeam}</div>
+          <div>Runs: ${data.runs}</div>
+          <div>Wickets: ${data.wickets}</div>
+          <div>Overs: ${data.overs}</div>
+          <br>
+          <div class="team">Opposition: ${data.oppositionTeam}</div>
+        `;
+      } catch (err) {
+        document.getElementById("scoreCard").textContent = "❌ Error fetching score";
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchScore();
+      setInterval(fetchScore, 5000); // update every 5s
+    });
+  </script>
+</body>
+</html>
